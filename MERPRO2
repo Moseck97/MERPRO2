@@ -8,8 +8,8 @@ info:
     et analyse croisée de retours d’expérience.
 
 servers:
-  - url: https://api.expert-merpro.com/v1
-    description: Serveur MERPRO – Extensions avancées
+  - url: https://api.merpro-extensions.com/v1
+    description: Serveur dédié aux extensions avancées MERPRO
 
 paths:
 
