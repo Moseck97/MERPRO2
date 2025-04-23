@@ -1,0 +1,216 @@
+openapi: 3.1.0
+info:
+  title: API Expert MERPRO – Extensions Avancées
+  version: 1.0.0
+  description: >
+    Extensions avancées pour l’assistant MERPRO : audit de plan d’action,
+    cartographie des problèmes, consultation d’historique, modèles MERPRO,
+    et analyse croisée de retours d’expérience.
+
+servers:
+  - url: https://api.expert-merpro.com/v1
+    description: Serveur MERPRO – Extensions avancées
+
+paths:
+
+  /audit-plan-action:
+    post:
+      operationId: auditerPlanAction
+      summary: Auditer un plan d’action MERPRO existant
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - actions
+              properties:
+                actions:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      qui:
+                        type: string
+                      quoi:
+                        type: string
+                      quand:
+                        type: string
+                      comment:
+                        type: string
+      responses:
+        '200':
+          description: Résultat de l’audit du plan
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  completude:
+                    type: string
+                  recommandations:
+                    type: array
+                    items:
+                      type: string
+                  risqueIncompletude:
+                    type: string
+        '500':
+          description: Erreur serveur
+
+  /cartographie-problemes:
+    get:
+      operationId: cartographierProblemes
+      summary: Visualiser les problèmes actifs par zone, domaine ou statut
+      parameters:
+        - name: domaine
+          in: query
+          required: false
+          schema:
+            type: string
+            description: "Exemple : qualité, production, RH"
+        - name: etat
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [en cours, terminé, bloqué]
+            description: "Statut du problème"
+      responses:
+        '200':
+          description: Liste cartographiée des problèmes
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  problemes:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        titre:
+                          type: string
+                        zone:
+                          type: string
+                        cause:
+                          type: string
+                        statut:
+                          type: string
+        '500':
+          description: Erreur serveur
+
+  /historique-probleme:
+    get:
+      operationId: afficherHistoriqueProbleme
+      summary: Récupérer tout l’historique d’un problème traité
+      parameters:
+        - name: idProbleme
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Historique MERPRO complet du problème
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  resume:
+                    type: string
+                  timeline:
+                    type: array
+                    items:
+                      type: string
+                  bilanFinal:
+                    type: string
+        '500':
+          description: Erreur serveur
+
+  /modeles-merpro:
+    get:
+      operationId: listerModelesMerpro
+      summary: Lister des modèles MERPRO par secteur ou thème
+      parameters:
+        - name: secteur
+          in: query
+          required: false
+          schema:
+            type: string
+            description: "Exemple : industrie, service client, logistique"
+      responses:
+        '200':
+          description: Modèles MERPRO disponibles
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  modeles:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        nom:
+                          type: string
+                        resume:
+                          type: string
+                        lien:
+                          type: string
+        '500':
+          description: Erreur serveur
+
+  /analyse-retours-experience:
+    post:
+      operationId: analyserRetoursExperience
+      summary: Analyser plusieurs MERPRO pour en extraire des leçons clés
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - problemes
+              properties:
+                problemes:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      titre:
+                        type: string
+                      causesRacines:
+                        type: array
+                        items:
+                          type: string
+                      actions:
+                        type: array
+                        items:
+                          type: string
+                      statut:
+                        type: string
+      responses:
+        '200':
+          description: Synthèse des leçons apprises
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  themesRecurrents:
+                    type: array
+                    items:
+                      type: string
+                  bonnesPratiques:
+                    type: array
+                    items:
+                      type: string
+                  pointsDeVigilance:
+                    type: array
+                    items:
+                      type: string
+        '500':
+          description: Erreur serveur
